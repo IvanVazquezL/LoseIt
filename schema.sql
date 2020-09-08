@@ -133,3 +133,7 @@ SELECT Weeks.week,Users.username,Weeks.weight,Weeks.previous_weight, Weeks.delta
 SELECT Weeks.week,Users.username,Weeks.weight,Weeks.previous_weight, Weeks.delta, Weeks.delta_acc FROM Users INNER JOIN Weeks ON Users.user_id = Weeks.user_id ORDER BY Weeks.week;
 
 DELETE FROM Weeks WHERE week_id=27;
+
+SELECT Weeks.week,Users.username,Weeks.weight,Weeks.previous_weight, Weeks.delta, Weeks.delta_acc FROM Users INNER JOIN Weeks ON Users.user_id = Weeks.user_id ORDER BY Weeks.week DESC;
+
+SELECT week FROM Weeks GROUP BY week HAVING COUNT(*) > 1 ORDER BY week DESC;

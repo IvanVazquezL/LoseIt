@@ -107,6 +107,19 @@ app.post("/home", async(req,res)=>{
   res.redirect("home");
 });
 
+app.get("/compare", async(req,res)=>{
+  try {
+    
+  } catch (e) {
+    console.log(e);
+  }
+  res.render("compare");
+});
+
+app.get("/tdee", async(req,res)=>{
+  res.render("tdee");
+});
+
 app.listen(8080, function() {
   console.log("Server started on port 8080");
 });
