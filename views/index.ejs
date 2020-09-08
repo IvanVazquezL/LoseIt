@@ -2,27 +2,79 @@
 <div class="container">
 <h1 class="text-center mt-5">Lose It Challenge</h1>
 <div class="mt-5">
-<h2>Semana</h2>
+  <div class="mb-5">
+  <% if(post[0].sex === "male"){%>
+
+    <h2 style="float: left;">¡Bienvenido <%=post[0].username%>!</h2>
+
+<% }else{%>
+
+  <h2 style="float: left;">¡Bienvenida <%=post[0].username%>!</h2>
+
+<% }%>
+<button class="btn btn-primary"  style="float: right; position: relative;  right: 10px; left:1px;">Editar Peso</button>
+<button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" style="float: right; position: relative;  right: 10px;">Agregar Peso</button>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form action="/home" method="POST" >
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Agregar Peso<h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h6>Fecha: <%=new Date().toString().substr(0,15)%></h6>
+        <input class="mt-2" type="text" name="new_weight" value="" placeholder="Peso">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+
+
 <table class="table table-bordered">
   <thead class="thead-dark">
     <tr>
-      <th scope="col">Posición</th>
+      <th scope="col">Semana</th>
       <th scope="col">Nombre</th>
       <th scope="col">Peso</th>
-      <th scope="col">Peso Anterior</th>
-      <th scope="col">Peso Perdido</th>
+      <th scope="col">Diferencia</th>
+      <th scope="col">Peso Perdido Acumulado</th>
+
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <th scope="row">1</th>
+  <% post.forEach(function(element, index, array) {%>
 
-      <td><%=post.username%></td>
-      <td>Otto</td>
-      <td>@mdo</td>
-      <td>@mdo</td>
+    <tr>
+
+      <th scope="row"><%=element.week.toString().substr(0,15)%></th>
+
+      <td><%=element.username%></td>
+      <td><%=element.weight%></td>
+      <% if(element.delta*-1 > 0){%>
+      <td class="gain">△<%=element.delta*-1%></td>
+<%} else if(element.delta*-1 < 0){%>
+  <td class="loss">▽<%=element.delta*-1%></td>
+
+  <%} else{%>
+    <td class="same"><%=element.delta*-1%></td>
+
+    <%}%>
+
+      <td><%=element.delta_acc%></td>
     </tr>
-  
+    <% });%>
+
   </tbody>
 </table>
 

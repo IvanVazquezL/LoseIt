@@ -129,3 +129,7 @@ UPDATE Weeks SET delta = -0.60, delta_acc = -0.80 WHERE week_id = 23;
 UPDATE Weeks SET delta = 2.10, delta_acc = 0.70 WHERE week_id = 24;
 
 SELECT Weeks.week,Users.username,Weeks.weight,Weeks.previous_weight, Weeks.delta, Weeks.delta_acc FROM Users INNER JOIN Weeks ON Users.user_id = Weeks.user_id;
+
+SELECT Weeks.week,Users.username,Weeks.weight,Weeks.previous_weight, Weeks.delta, Weeks.delta_acc FROM Users INNER JOIN Weeks ON Users.user_id = Weeks.user_id ORDER BY Weeks.week;
+
+DELETE FROM Weeks WHERE week_id=27;
