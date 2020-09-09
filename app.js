@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
+
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -109,16 +110,56 @@ app.post("/home", async(req,res)=>{
 
 app.get("/compare", async(req,res)=>{
   try {
-    
+    const allUsers = await pool.query("SELECT username,delta,delta_acc,weight,week FROM WEEKS JOIN Users on Users.user_id=Weeks.user_id ORDER BY week DESC");
+    const allWeeks = await pool.query("SELECT week FROM Weeks GROUP BY week HAVING COUNT(*) > 1 ORDER BY week DESC");
+    const numberUsers = await pool.query("SELECT COUNT(*) FROM Users");
+
+    var users = parseInt(numberUsers.rows[0].count);
+    var weeks = allWeeks.rows
+
+    var usersInfo = allUsers.rows;
+
+    res.render("compare",{usersInfo,weeks,users});
+
+    weeks.forEach(function(element){
+      console.log(element.week);
+      let count = 0;
+      // console.log(usersInfo);
+      usersInfo.every(function(element,index,object){
+        console.log("Name: "+element.username+", Peso:"+element.weight+", Week:"+element.week);
+        count +=1;
+
+
+
+        if(count===users){
+          object.splice(0,users);
+          return false;
+        }
+        else{
+          return true;
+        }
+      });
+
+      // console.log(usersInfo);
+      console.log(" ");
+    });
+console.log(numberUsers);
+console.log(users);
   } catch (e) {
     console.log(e);
   }
-  res.render("compare");
+
 });
 
 app.get("/tdee", async(req,res)=>{
   res.render("tdee");
 });
+
+app.get("/prediction", async(req,res)=>{
+  res.render("prediction");
+});
+
+
 
 app.listen(8080, function() {
   console.log("Server started on port 8080");

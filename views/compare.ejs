@@ -1,44 +1,56 @@
 <%- include ("partials/Header") %>
 
 <div class="mt-5">
+  <%weeks.forEach(function(element){%>
+  <h2><%=element.week.toString().substr(0,15)%></h2>
+  <table class="table table-bordered">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Posición</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Peso</th>
+        <th scope="col">Diferencia</th>
+        <th scope="col">Peso Perdido Acumulado</th>
 
-<table class="table table-bordered">
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col">Posición</th>
-      <th scope="col">Nombre</th>
-      <th scope="col">Peso</th>
-      <th scope="col">Diferencia</th>
-      <th scope="col">Peso Perdido Acumulado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% let count = 0;%>
+      <% usersInfo.every(function(element, index, object) {%>
 
-    </tr>
-  </thead>
-  <tbody>
-  <% post.forEach(function(element, index, array) {%>
+      <tr>
 
-    <tr>
+        <th scope="row"><%=index+1%></th>
 
-      <th scope="row"><%=index-1%></th>
+        <td><%=element.username%></td>
+        <td><%=element.weight%></td>
+        <% if(element.delta*-1 > 0){%>
+        <td class="gain">△<%=element.delta*-1%></td>
+        <% } else if(element.delta*-1 < 0){%>
+        <td class="loss">▽<%=element.delta*-1%></td>
 
-      <td><%=element.username%></td>
-      <td><%=element.weight%></td>
-      <% if(element.delta*-1 > 0){%>
-      <td class="gain">△<%=element.delta*-1%></td>
-<%} else if(element.delta*-1 < 0){%>
-  <td class="loss">▽<%=element.delta*-1%></td>
+        <% } else{%>
+        <td class="same"><%=element.delta*-1%></td>
 
-  <%} else{%>
-    <td class="same"><%=element.delta*-1%></td>
-
-    <%}%>
+        <% }%>
 
       <td><%=element.delta_acc%></td>
-    </tr>
-    <% });%>
+      </tr>
+      <% count += 1%>
+        <% if(count===users){%>
+          <% object.splice(0,users);%>
+          <% return false;%>
+        <% }else{%>
+          <% return true;%>
+        <% }%>
+      <% });%>
 
-  </tbody>
-</table>
+    </tbody>
+  </table>
 
+
+<% });%>
 </div>
-</div>
+
+
 <%- include ("partials/Footer") %>
