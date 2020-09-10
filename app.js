@@ -100,7 +100,13 @@ app.post("/home", async(req,res)=>{
     let updateTable = "INSERT INTO Weeks (week,weight,delta,user_id,previous_weight,delta_acc) VALUES (\'"+new Date().toString().substr(0,15)+"\',"+req.body.new_weight+","+(weightTable-req.body.new_weight)+","+req.session.user_id+","+weightTable+","+(parseFloat(deltaAccTable)+parseFloat(weightTable)-req.body.new_weight).toFixed(2)+")"
     console.log(updateTable);
     const updateWeek = await pool.query(updateTable);
-// INSERT INTO Weeks (week,weight,delta,user_id) VALUES ('2020-08-17',83.4,null,2);
+
+    let retrieveHeight = "SELECT height FROM Users WHERE USER_ID ="+req.session.user_id;
+    const heightQuery = await pool.query(retrieveHeight);
+    let newBmi = (req.body.new_weight /(parseFloat(heightQuery.rows[0].height)*parseFloat(heightQuery.rows[0].height))).toFixed(1);
+    console.log(newBmi);
+    let updateWeightBmi = "UPDATE Users SET current_weight="+req.body.new_weight+",bmi="+newBmi+" WHERE user_id ="+req.session.user_id;
+    const updateUser = await pool.query(updateWeightBmi);
   } catch (e) {
     console.log(e);
   }
@@ -152,7 +158,51 @@ console.log(users);
 });
 
 app.get("/tdee", async(req,res)=>{
-  res.render("tdee");
+  try {
+    const resultBmi = await pool.query("SELECT bmi,height,current_weight,age,sex FROM Users WHERE user_id="+req.session.user_id);
+
+var bmi =resultBmi.rows[0].bmi;
+var heightBmi = resultBmi.rows[0].height;
+var weightTdee = resultBmi.rows[0].current_weight;
+var ageTdee = resultBmi.rows[0].age;
+var sexTdee = resultBmi.rows[0].sex;
+var category;
+var firstLimit;
+var lastLimit;
+var tdee;
+
+if(bmi<18.5){
+  category="Bajo Peso";
+}
+else if(bmi>=18.5 && bmi<=24.9){
+  category="Peso Normal";
+}
+else if(bmi>=25.0 && bmi<=29.9){
+  category="Sobrepeso";
+}
+else{
+  category="Obeso";
+}
+
+firstLimit = (18.5 * (heightBmi*heightBmi)).toFixed(1);
+lastLimit = (24.9 * (heightBmi*heightBmi)).toFixed(1);
+
+if(sexTdee==="male"){
+  tdee = (((10*weightTdee + 6.25*(heightBmi*100) - 5.0*ageTdee) + 5) * 1.2).toFixed(0);
+  console.log(weightTdee);
+  console.log(heightBmi);
+  console.log(ageTdee);
+  console.log(tdee);
+}
+else{
+  tdee = (((10*weightTdee + 6.25*(heightBmi*100) - 5.0*ageTdee) - 161) * 1.2).toFixed(0);
+}
+
+res.render("tdee",{bmi,category,firstLimit,lastLimit,tdee});
+  } catch (e) {
+
+  }
+
 });
 
 app.get("/prediction", async(req,res)=>{

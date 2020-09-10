@@ -1,2 +1,39 @@
 <%- include ("partials/Header") %>
+<div class="container text-center mt-5">
+  <h2>Indice de Masa Corporal</h2>
+  <h4 class="mt-5">Su IMC es <%=bmi%>, lo que indica que su peso está en la categoría de <%=category%></h4>
+<h4 class="mt-5">Para su estatura, un peso normal variaría entre <%=firstLimit%> a <%=lastLimit%> kilogramos</h4>
+  <div class="d-flex justify-content-center mt-5">
+  <table class="table w-50">
+  <tbody>
+    <tr>
+      <th scope="row">Por debajo de 18.5</th>
+      <td>Bajo Peso</td>
+    </tr>
+    <tr>
+      <th scope="row">18.5 – 24.99</th>
+      <td>Peso Normal</td>
+    </tr>
+    <tr>
+      <th scope="row">25.0 – 29.99</th>
+      <td>Sobrepeso</td>
+
+    </tr>
+    <tr>
+      <th scope="row">30.0 o más</th>
+      <td>Obeso</td>
+
+    </tr>
+  </tbody>
+</table>
+
+</div>
+<hr>
+  <h2>Calorías quemadas cada día</h2>
+  <h2><%=tdee%></h2>
+  <p>calorías por día</p>
+
+
+
+</div>
 <%- include ("partials/Footer") %>

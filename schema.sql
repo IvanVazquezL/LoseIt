@@ -11,7 +11,7 @@ CREATE TABLE Users(
   type VARCHAR(20),
   calories_day INTEGER,
   calories_week INTEGER,
-  bmi DECIMAL(3,2),
+  bmi DECIMAL(3,1),
   ideal_weight INTEGER,
   goal DECIMAL(6,2)
 );
@@ -137,3 +137,13 @@ DELETE FROM Weeks WHERE week_id=27;
 SELECT Weeks.week,Users.username,Weeks.weight,Weeks.previous_weight, Weeks.delta, Weeks.delta_acc FROM Users INNER JOIN Weeks ON Users.user_id = Weeks.user_id ORDER BY Weeks.week DESC;
 
 SELECT week FROM Weeks GROUP BY week HAVING COUNT(*) > 1 ORDER BY week DESC;
+
+UPDATE Users SET height = 1.73,age = 54 WHERE user_id = 1;
+
+UPDATE Users SET height = 1.57, WHERE user_id = 2;
+
+ALTER TABLE Users DROP COLUMN bmi;
+
+ALTER TABLE Users ADD bmi DECIMAL(3,1);
+
+UPDATE Weeks SET week='2020-09-07' WHERE week_id IN (34,35,36,37);
