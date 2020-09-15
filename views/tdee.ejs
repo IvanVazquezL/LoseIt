@@ -3,6 +3,10 @@
   <h2>Indice de Masa Corporal</h2>
   <h4 class="mt-5">Su IMC es <%=bmi%>, lo que indica que su peso está en la categoría de <%=category%></h4>
 <h4 class="mt-5">Para su estatura, un peso normal variaría entre <%=firstLimit%> a <%=lastLimit%> kilogramos</h4>
+<% if(!(category==="Peso Normal")){%>
+<h4 class="mt-5"><%=(weightTdee-lastLimit).toFixed(2)%> kilos por bajar para estar en la categoría de peso normal</h4>
+<% }%>
+
   <div class="d-flex justify-content-center mt-5">
   <table class="table w-50">
   <tbody>
@@ -29,9 +33,53 @@
 
 </div>
 <hr>
-  <h2>Calorías quemadas cada día</h2>
+  <h2 class="mt-2">Calorías diarias para mantener el peso</h2>
   <h2><%=tdee%></h2>
   <p>calorías por día</p>
+  <h2 class="mt-2">Calorías diarias para bajar 300 gramos a la semana</h2>
+  <h2><%=tdee-300%></h2>
+  <p>calorías por día</p>
+  <h2 class="mt-2">Calorías diarias para bajar 500 gramos a la semana</h2>
+  <h2><%=tdee-500%></h2>
+  <p>calorías por día</p>
+  <hr>
+    <h2 class="mt-2">Estimación del Peso Ideal</h2>
+    <div class="d-flex justify-content-center mt-5">
+    <table class="table w-50">
+      <thead>
+      <tr>
+        <th>Fórmula</th>
+        <th>Peso Ideal</th>
+        <th>Kilos por bajar</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">Fórmula G.J. Hamwi</th>
+        <td><%=hamwi%></td>
+        <td><%=(weightTdee-hamwi).toFixed(1)%></td>
+      </tr>
+      <tr>
+        <th scope="row">Fórmula B.J. Devine</th>
+        <td><%=devine%></td>
+        <td><%=(weightTdee-devine).toFixed(1)%></td>
+      </tr>
+      <tr>
+        <th scope="row">Fórmula J.D. Robinson</th>
+        <td><%=robinson%></td>
+        <td><%=(weightTdee-robinson).toFixed(1)%></td>
+
+      </tr>
+      <tr>
+        <th scope="row">Fórmula D.R. Miller </th>
+        <td><%=miller%></td>
+        <td><%=(weightTdee-miller).toFixed(1)%></td>
+
+      </tr>
+    </tbody>
+  </table>
+
+  </div>
 
 
 

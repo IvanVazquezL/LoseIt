@@ -1,0 +1,104 @@
+<%- include ("partials/Header") %>
+
+<div class="mt-5 text-center">
+  <h2>Predicción de Perdida de Peso</h2>
+  <div class="d-flex justify-content-center mt-5 mb-5">
+
+
+  <form class="form-inline" action="/prediction" method="POST">
+  <div class="form-group mb-2">
+    <input type="text" class="form-control" name="caloriesLimit" placeholder="Calorías a restar">
+  </div>
+  <div class="form-group mx-sm-3 mb-2">
+    <input type="text" class="form-control" name="idealWeight" placeholder="Peso Ideal">
+  </div>
+  <button type="submit" class="btn btn-primary mb-2">Enviar</button>
+</form>
+</div>
+<%if(flag){%>
+  <table class="table table-bordered">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Semana</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Peso</th>
+        <th scope="col">Calorías mantenimiento</th>
+        <th scope="col">Calorías límite</th>
+        <th scope="col">Calorías quemadas con ejercicio</th>
+        <th scope="col">Categoría</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row"></th>
+        <th ><%=lastWeek.toString().substr(0,15)%></th>
+        <td><%=predictionName%></td>
+        <td><%=predictionWeight%></td>
+        <td><%=predictionLimit%></td>
+        <%if(predictionLimit-caloriesLimit>=1000){%>
+        <td><%=predictionLimit-caloriesLimit%></td>
+        <td></td>
+        <%}else{%>
+          <td><%=1000%></td>
+          <td><%=caloriesLimit-(predictionLimit-1000)%></td>
+          <%}%>
+
+    
+        <td><%=predictionCategory%></td>
+      </tr>
+      <% let weekWeight = parseFloat((predictionWeight-(caloriesLimit/1000)).toFixed(2));%>
+      <% console.log(weekWeight);%>
+      <% console.log(idealWeight);%>
+      <% let count = 0;%>
+      <%var d = new Date(lastWeek.toString().substr(0,15))%>
+      <%var newDate = (new Date(d.setDate(d.getDate()+parseInt(7)))).toString().substr(0,15)%>
+      <%while(weekWeight>=idealWeight){%>
+        <% console.log("HELLO");%>
+      <tr>
+        <th scope="row"><%=count+=1%></th>
+        <th><%=newDate%></th>
+        <% newDate = new Date(newDate)%>
+        <% newDate = (new Date(newDate.setDate(newDate.getDate()+parseInt(7)))).toString().substr(0,15)%>
+        <td><%=predictionName%></td>
+        <td><%=weekWeight%></td>
+        <%var limitLoop;%>
+        <%if(predictionSex==="male"){%>
+          <%limitLoop = parseFloat((((10*weekWeight + 6.25*(predictionHeight*100) - 5.0*predictionAge) + 5) * 1.2).toFixed(0))%>
+        <%}else{%>
+          <%limitLoop = parseFloat((((10*weekWeight + 6.25*(predictionHeight*100) - 5.0*predictionAge) - 161) * 1.2).toFixed(0));%>
+        <%}%>
+        <td><%=limitLoop%></td>
+        <%if(limitLoop-caloriesLimit>=1000){%>
+          <td><%=limitLoop-caloriesLimit%></td>
+          <td></td>
+          <%}else{%>
+            <td><%=1000%></td>
+            <td><%=caloriesLimit-(limitLoop-1000)%></td>
+              <%}%>
+          <% var bmi =(weekWeight /(parseFloat(predictionHeight)*parseFloat(predictionHeight))).toFixed(1)%>
+          <% var category;%>
+
+          <%if(bmi<18.5){%>
+            <%category="Bajo Peso";%>
+          <%}else if(bmi>=18.5 && bmi<=24.9){%>
+            <%category="Peso Normal";%>
+          <%}else if(bmi>=25.0 && bmi<=29.9){%>
+            <%category="Sobrepeso";%>
+          <%}else{%>
+            <%category="Obeso";%>
+          <%}%>
+
+        <td><%=category%></td>
+      </tr>
+      <% weekWeight =parseFloat((weekWeight-(caloriesLimit/1000)).toFixed(2));%>
+<%console.log(weekWeight);%>
+      <%}%>
+    </tbody>
+  </table>
+  <%}%>
+</div>
+
+
+<%- include ("partials/Footer") %>

@@ -147,3 +147,35 @@ ALTER TABLE Users DROP COLUMN bmi;
 ALTER TABLE Users ADD bmi DECIMAL(3,1);
 
 UPDATE Weeks SET week='2020-09-07' WHERE week_id IN (34,35,36,37);
+
+ALTER TABLE Users DROP COLUMN type;
+ALTER TABLE Users DROP COLUMN calories_day;
+ALTER TABLE Users DROP COLUMN calories_week;
+ALTER TABLE Users DROP COLUMN ideal_weight;
+ALTER TABLE Users DROP COLUMN goal;
+
+ALTER TABLE Users ADD category VARCHAR(20);
+ALTER TABLE Users ADD limit_normal DECIMAL(3,1);
+ALTER TABLE Users ADD limit_calories INTEGER;
+ALTER TABLE Users ADD hamwi INTEGER;
+ALTER TABLE Users ADD devine INTEGER;
+ALTER TABLE Users ADD miller INTEGER;
+ALTER TABLE Users ADD robinson INTEGER;
+ALTER TABLE Users ADD weight_to_lose DECIMAL(3,1);
+
+SELECT week FROM Weeks GROUP BY week HAVING COUNT(*) > 1 ORDER BY week DESC LIMIT 1;
+
+CREATE TABLE Food (
+    food_id SERIAL PRIMARY KEY,
+    food_name VARCHAR(70),
+    brand VARCHAR(25),
+    food_weight DECIMAL(6,3),
+    calories_container INTEGER,
+    portion INTEGER,
+    piece INTEGER,
+    calories_portion INTEGER
+);
+
+ALTER TABLE food ADD food_liters DECIMAL(5,2);
+
+ALTER TABLE food ADD portion_liters DECIMAL(5,2);

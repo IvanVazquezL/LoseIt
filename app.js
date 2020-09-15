@@ -170,6 +170,10 @@ var category;
 var firstLimit;
 var lastLimit;
 var tdee;
+var hamwi;
+var devine;
+var robinson;
+var miller;
 
 if(bmi<18.5){
   category="Bajo Peso";
@@ -189,16 +193,25 @@ lastLimit = (24.9 * (heightBmi*heightBmi)).toFixed(1);
 
 if(sexTdee==="male"){
   tdee = (((10*weightTdee + 6.25*(heightBmi*100) - 5.0*ageTdee) + 5) * 1.2).toFixed(0);
-  console.log(weightTdee);
-  console.log(heightBmi);
-  console.log(ageTdee);
-  console.log(tdee);
+  hamwi = parseInt(48+((heightBmi*100)-152.4)*1.1);
+  devine = (50+(((heightBmi*100)-152.4)*0.921)).toFixed(0);
+  robinson = parseInt(52 +1.9*parseInt(((heightBmi*100)-152.4)/2.4));
+  miller = parseInt(56.2 +1.41*((heightBmi*100)-152.4)/2.4);
 }
 else{
   tdee = (((10*weightTdee + 6.25*(heightBmi*100) - 5.0*ageTdee) - 161) * 1.2).toFixed(0);
+  hamwi = parseInt(45+((heightBmi*100)-152.4)*0.9);
+  devine = (45.5+(((heightBmi*100)-152.4)*0.921)).toFixed(0);
+  robinson = parseInt(49 +1.7*((heightBmi*100)-152.4)/2.4);
+  miller = (53.1 +1.36*((1.57*100)-152.4)/2.4).toFixed(0);
 }
 
-res.render("tdee",{bmi,category,firstLimit,lastLimit,tdee});
+let insertInfo = "UPDATE Users SET category=\'"+category+"\',limit_normal="+lastLimit+",limit_calories="+(tdee-500)+",hamwi="+hamwi+",devine="+devine+",miller="+miller+",robinson="+robinson+",weight_to_lose="+((weightTdee-lastLimit).toFixed(2))+" WHERE user_id="+req.session.user_id;
+
+await pool.query(insertInfo);
+
+
+res.render("tdee",{bmi,category,firstLimit,lastLimit,tdee,weightTdee,hamwi,devine,robinson,miller});
   } catch (e) {
 
   }
@@ -206,7 +219,129 @@ res.render("tdee",{bmi,category,firstLimit,lastLimit,tdee});
 });
 
 app.get("/prediction", async(req,res)=>{
-  res.render("prediction");
+  var flag = false;
+  res.render("prediction",{flag});
+});
+
+app.post("/prediction", async(req,res)=>{
+
+
+    try {
+      const getWeightCategory = await pool.query("SELECT username,limit_calories,limit_normal,current_weight,category,sex,height,age FROM Users WHERE user_id="+req.session.user_id);
+      let predictionWeight = getWeightCategory.rows[0].current_weight;
+      let predictionCategory = getWeightCategory.rows[0].category;
+      let predictionName = getWeightCategory.rows[0].username;
+      let predictionLimit = getWeightCategory.rows[0].limit_calories+500;
+      let predictionNormal = getWeightCategory.rows[0].limit_normal;
+      let predictionSex = getWeightCategory.rows[0].sex;
+      let predictionHeight = getWeightCategory.rows[0].height;
+      let predictionAge = getWeightCategory.rows[0].age;
+
+      var caloriesLimit = req.body.caloriesLimit;
+      var idealWeight = req.body.idealWeight;
+
+      const getLastWeek = await pool.query("SELECT week FROM Weeks GROUP BY week HAVING COUNT(*) > 1 ORDER BY week DESC LIMIT 1");
+      let lastWeek = getLastWeek.rows[0].week;
+      console.log(lastWeek);
+      // console.log(predictionWeight);
+      // console.log(predictionCategory);
+      // console.log(lastWeek);
+      var flag = true;
+    res.render("prediction",{flag,predictionSex,predictionAge,predictionHeight,caloriesLimit,idealWeight,lastWeek,predictionWeight,predictionCategory,predictionName,predictionLimit,predictionNormal});
+
+
+    } catch (e) {
+      console.log(e);
+    }
+
+});
+
+app.get("/count", async(req,res)=>{
+  res.render("count");
+});
+
+app.post("/count", async(req,res)=>{
+  console.log(req.body.foodName);
+  console.log("FoodBrand: "+req.body.foodBrand);
+  if(req.body.foodBrand){
+    console.log("Hello");
+  }else{
+    console.log("Bye");
+  }
+  try {
+    let foodBrand;
+    let foodWeight;
+    let caloriesContainer;
+    let foodPortion;
+    let foodPiece;
+    let caloriesPortion;
+    let foodLiters;
+    let portionLiters;
+
+    if(req.body.foodBrand){
+      foodBrand = req.body.foodBrand;
+    }
+    else{
+      foodBrand = null;
+    }
+
+    if(req.body.foodWeight){
+      foodWeight = req.body.foodWeight;
+    }
+    else{
+      foodWeight = null;
+    }
+
+    if(req.body.caloriesContainer){
+      caloriesContainer = req.body.caloriesContainer;
+    }
+    else{
+      caloriesContainer = null;
+    }
+
+    if(req.body.foodPortion){
+      foodPortion = req.body.foodPortion;
+    }
+    else{
+      foodPortion = null;
+    }
+
+    if(req.body.foodPiece){
+      foodPiece = req.body.foodPiece;
+    }
+    else{
+      foodPiece = null;
+    }
+
+    if(req.body.caloriesPortion){
+      caloriesPortion = req.body.caloriesPortion;
+    }
+    else{
+      caloriesPortion = null;
+    }
+
+    if(req.body.foodLiters){
+      foodLiters = req.body.foodLiters;
+    }
+    else{
+      foodLiters = null;
+    }
+
+    if(req.body.portionLiters){
+      portionLiters = req.body.portionLiters;
+    }
+    else{
+      portionLiters = null;
+    }
+
+    let queryFood = "INSERT INTO Food VALUES(DEFAULT,\'"+req.body.foodName+"\',\'"+foodBrand+"\',"+foodWeight+","+caloriesContainer+","+foodPortion+","+foodPiece+","+caloriesPortion+","+foodLiters+","+portionLiters+")"
+    console.log(queryFood);
+    const newFood = await pool.query(queryFood);
+
+  } catch (e) {
+    console.log(e);
+  }
+  res.render("count");
 });
 
 
